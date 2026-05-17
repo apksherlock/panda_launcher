@@ -92,10 +92,4 @@ app/src/debug/                       # Debug-only menu activity
 
 ## License
 
-Licensed under **[GNU GPL v3.0](LICENSE)**.
-
-- **You** can still monetize on Google Play (paid app, IAP, ads). GPL does not stop you from selling your own build.
-- **Forks** that distribute a modified app must stay open source under GPL-3.0 and provide source — that is the main protection against someone taking the code, closing it, and competing without sharing changes.
-- **MIT/Apache** would be more permissive for contributors but make copycat closed-source store listings easier. **GPL-3.0** is a common balance for “open on GitHub, harder to strip and resell privately.”
-
-This is not legal advice. Trademark (“Panda Launcher” branding) and dual licensing are separate from the code license; ask a lawyer if you need those for launch.
+[GNU GPL v3.0](LICENSE)
