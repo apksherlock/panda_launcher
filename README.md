@@ -1,4 +1,6 @@
-# Panda Launcher (WIP)
+# Panda Launcher (WIP / Vibe Coded)
+
+Most importantly let's see how far can you go with AI only.
 
 A minimal Android home launcher with a vintage **LCD / Game Boy calculator** look. Built with **Jetpack Compose** and a custom two-color design system — no Material Design components.
 
