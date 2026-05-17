@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Panda Launcher</string>
+    <string name="ink_greeting">hi, i\'m</string>
+    <string name="notifications_all_caught_up">all caught up</string>
+    <string name="notifications_enable_access">tap to enable notification access</string>
+    <string name="notification_listener_label">Panda Launcher</string>
+    <string name="all_apps_search_hint">search apps</string>
+    <string name="ink_gb_car_wallpaper_label">Ink wave</string>
+    <string name="ink_gb_car_wallpaper_description">Ambient LCD wave band</string>
+</resources>

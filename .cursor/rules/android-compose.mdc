@@ -1,0 +1,13 @@
+---
+description: Apply chrisbanes Android/Compose skills when editing Kotlin UI code
+globs: app/src/**/*.kt
+alwaysApply: false
+---
+
+# Android & Jetpack Compose
+
+Before changing Compose UI, read **`panda-design-system`** (`.cursor/skills/panda-design-system/SKILL.md`) for Panda tokens, components, and anti-patterns.
+
+For Compose mechanics, read the matching skill from `.cursor/skills/<skill-name>/SKILL.md` (from [chrisbanes/skills](https://github.com/chrisbanes/skills)).
+
+Quick picks: `panda-design-system`, `compose-state-authoring`, `compose-state-hoisting`, `compose-side-effects`, `compose-recomposition-performance`, `kotlin-flow-state-event-modeling`, `kotlin-coroutines-structured-concurrency`. See `AGENTS.md` for the full index.
