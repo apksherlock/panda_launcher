@@ -2,10 +2,12 @@ package com.apksherlock.pandalauncher.data
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
 import android.os.Process
 import android.os.UserHandle
+import com.apksherlock.pandalauncher.MainActivity
 import com.apksherlock.pandalauncher.model.LaunchableApp
 
 class AppRepository(context: Context) {
@@ -14,12 +16,13 @@ class AppRepository(context: Context) {
     private val launcherApps =
         appContext.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
     private val ourPackage = appContext.packageName
+    private val homeActivityClass = MainActivity::class.java.name
 
     fun loadLaunchableApps(): List<LaunchableApp> {
         val user = Process.myUserHandle()
         return launcherApps.getActivityList(null, user)
             .asSequence()
-            .filter { it.applicationInfo.packageName != ourPackage }
+            .filter { !isExcludedFromAllApps(it) }
             .mapNotNull { info ->
                 val label = info.label?.toString()?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
                 val icon = loadLauncherIcon(info)
@@ -30,10 +33,21 @@ class AppRepository(context: Context) {
                     icon = icon,
                 )
             }
-            .distinctBy { it.packageName }
+            .distinctBy { it.componentName.flattenToString() }
             .sortedBy { it.label.lowercase() }
             .toList()
     }
+
+    private fun isExcludedFromAllApps(info: android.content.pm.LauncherActivityInfo): Boolean {
+        if (info.applicationInfo.packageName != ourPackage) return false
+        if (isDebugBuild()) {
+            return info.componentName.className == homeActivityClass
+        }
+        return true
+    }
+
+    private fun isDebugBuild(): Boolean =
+        (appContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     private fun loadLauncherIcon(info: android.content.pm.LauncherActivityInfo): Drawable {
         return try {

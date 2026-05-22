@@ -127,7 +127,7 @@ fun InkAllAppsSheet(
             ) {
                 items(
                     items = filtered,
-                    key = { it.packageName },
+                    key = { it.componentName.flattenToString() },
                 ) { app ->
                     InkAppGridCell(
                         app = app,
