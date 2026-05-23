@@ -1,5 +1,7 @@
 package com.apksherlock.pandalauncher.ui.home
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -13,6 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.apksherlock.pandalauncher.model.LaunchableApp
 import com.apksherlock.pandalauncher.ui.components.InkAppIcon
+import com.apksherlock.pandalauncher.ui.theme.InkClickMetrics
 import com.apksherlock.pandalauncher.ui.theme.inkClickable
 
 data class IconStackMetrics(
@@ -44,13 +47,21 @@ fun InkIconStack(
         horizontalAlignment = Alignment.End,
     ) {
         apps.take(count).forEach { app ->
+            val interactionSource = remember(app.componentName) { MutableInteractionSource() }
+            val pressed = interactionSource.collectIsPressedAsState().value
             InkAppIcon(
                 drawable = app.icon,
                 modifier = Modifier
                     .size(resolved.slotSize)
-                    .inkClickable(onClick = { onAppClick(app) }),
+                    .inkClickable(
+                        onClick = { onAppClick(app) },
+                        contentPadding = InkClickMetrics.none,
+                        interactionSource = interactionSource,
+                    ),
                 compact = true,
                 drawSize = resolved.drawSize,
+                loadingProgress = app.loadingProgress,
+                pressed = pressed,
             )
         }
     }

@@ -1,20 +1,26 @@
 package com.apksherlock.pandalauncher
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
-import androidx.core.view.WindowCompat
 import com.apksherlock.pandalauncher.ui.launcher.InkLauncherScreen
+import com.apksherlock.pandalauncher.ui.theme.InkSystemBars
 import com.apksherlock.pandalauncher.ui.theme.InkTheme
+import com.apksherlock.pandalauncher.ui.theme.enableInkEdgeToEdge
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+
 class MainActivity : ComponentActivity() {
+
+    private val _goHomeRequests = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val goHomeRequests: SharedFlow<Unit> = _goHomeRequests.asSharedFlow()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableInkEdgeToEdge()
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
         setContent {
             InkTheme {
@@ -23,21 +29,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-private fun InkSystemBars() {
-    val dark = isSystemInDarkTheme()
-    val activity = androidx.compose.ui.platform.LocalContext.current as? ComponentActivity ?: return
-    androidx.compose.runtime.SideEffect {
-        val window = activity.window
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = !dark
-            isAppearanceLightNavigationBars = !dark
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (isHomeIntent(intent)) {
+            _goHomeRequests.tryEmit(Unit)
         }
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
-        window.navigationBarColor = android.graphics.Color.TRANSPARENT
-        @Suppress("DEPRECATION")
-        window.decorView.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+    }
+
+    private fun isHomeIntent(intent: Intent?): Boolean {
+        return intent?.action == Intent.ACTION_MAIN &&
+            intent.hasCategory(Intent.CATEGORY_HOME)
     }
 }

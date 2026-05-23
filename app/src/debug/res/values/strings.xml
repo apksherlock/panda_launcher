@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="debug_menu_title">Panda debug</string>
-    <string name="debug_section_wallpaper">Wallpaper</string>
-    <string name="debug_set_wallpaper">Set Ink wave wallpaper</string>
-    <string name="debug_section_notifications">Notifications</string>
-    <string name="debug_post_three">Post 3 test notifications</string>
-    <string name="debug_post_one">Post 1 notification</string>
-    <string name="debug_clear">Clear test notifications</string>
+    <string name="debug_section_notifications">Notifications (test count)</string>
+    <string name="debug_notifications_hint">Enable notification access, post tests, then open home to see the count label.</string>
+    <string name="debug_open_notification_access">Open notification access settings</string>
+    <string name="debug_post_one">Post 1</string>
+    <string name="debug_post_three">Post 3</string>
+    <string name="debug_post_ten">Post 10</string>
+    <string name="debug_post_twenty">Post 20</string>
+    <string name="debug_clear_notifications">Clear test notifications</string>
     <string name="debug_section_launcher">Launcher</string>
     <string name="debug_open_home">Open launcher home</string>
-    <string name="debug_permission_needed">Allow notifications to post tests</string>
+    <string name="debug_clear_launcher_prefs">Clear name &amp; favorite</string>
 </resources>

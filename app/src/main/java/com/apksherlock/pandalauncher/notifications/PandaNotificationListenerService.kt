@@ -38,7 +38,7 @@ class PandaNotificationListenerService : NotificationListenerService() {
     }
 
     private fun publishActive() {
-        _notifications.value = mapTopThree(this, activeNotifications)
+        _notifications.value = mapActiveNotifications(this, activeNotifications)
     }
 
     companion object {
@@ -84,7 +84,17 @@ class PandaNotificationListenerService : NotificationListenerService() {
             }
         }
 
-        private fun mapTopThree(
+        fun dismissNotification(key: String): Boolean {
+            val service = instance ?: return false
+            return try {
+                service.cancelNotification(key)
+                true
+            } catch (_: Exception) {
+                false
+            }
+        }
+
+        private fun mapActiveNotifications(
             context: Context,
             active: Array<StatusBarNotification>?,
         ): List<InkNotification> {
@@ -97,7 +107,6 @@ class PandaNotificationListenerService : NotificationListenerService() {
                 }
                 .mapNotNull { it.toInkNotification(context) }
                 .sortedByDescending { it.postTime }
-                .take(3)
                 .toList()
         }
 

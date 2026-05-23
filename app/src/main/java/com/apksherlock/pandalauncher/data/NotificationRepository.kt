@@ -6,17 +6,26 @@ import android.content.Intent
 import android.provider.Settings
 import com.apksherlock.pandalauncher.model.InkNotification
 import com.apksherlock.pandalauncher.notifications.PandaNotificationListenerService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class NotificationRepository(context: Context) {
 
     private val appContext = context.applicationContext
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     val notifications: StateFlow<List<InkNotification>> =
         PandaNotificationListenerService.notifications
 
-    val listenerConnected: StateFlow<Boolean> =
-        PandaNotificationListenerService.connected
+    val notificationCount: StateFlow<Int> =
+        notifications
+            .map { it.size }
+            .stateIn(scope, SharingStarted.WhileSubscribed(5_000), 0)
 
     fun isAccessEnabled(): Boolean =
         PandaNotificationListenerService.isAccessEnabled(appContext)
@@ -48,4 +57,7 @@ class NotificationRepository(context: Context) {
             false
         }
     }
+
+    fun dismissNotification(notification: InkNotification): Boolean =
+        PandaNotificationListenerService.dismissNotification(notification.key)
 }

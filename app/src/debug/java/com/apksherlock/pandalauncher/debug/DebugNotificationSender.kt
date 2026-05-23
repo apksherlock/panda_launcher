@@ -11,18 +11,29 @@ import com.apksherlock.pandalauncher.R
 
 private const val CHANNEL_ID = "panda_debug"
 private const val ID_BASE = 9001
+private const val MAX_SLOTS = 32
 
 private data class Sample(
     val title: String,
     val text: String,
 )
 
-private val samples = listOf(
+private val samplePool = listOf(
     Sample("Alex", "hey — are we still on for tonight?"),
     Sample("Calendar", "dentist · tomorrow 9:30"),
     Sample("Panda Launcher", "build finished successfully"),
+    Sample("Messages", "3 unread threads"),
+    Sample("Bank", "card purchase · $12.40"),
+    Sample("Weather", "rain expected after 6pm"),
+    Sample("Work", "standup moved to 10:15"),
+    Sample("Delivery", "package out for delivery"),
+    Sample("Podcast", "new episode available"),
+    Sample("System", "battery saver is on"),
+    Sample("GitHub", "PR #42 needs review"),
+    Sample("Reminder", "call mom this weekend"),
 )
 
+/** Posts test shade notifications (debug build only) to exercise the home count label. */
 object DebugNotificationSender {
 
     fun ensureChannel(context: Context) {
@@ -37,22 +48,33 @@ object DebugNotificationSender {
         manager.createNotificationChannel(channel)
     }
 
-    fun postOne(context: Context) {
-        ensureChannel(context)
-        post(context, samples.take(1))
-    }
+    fun postOne(context: Context) = postCount(context, 1)
 
-    fun postThree(context: Context) {
+    fun postThree(context: Context) = postCount(context, 3)
+
+    fun postTen(context: Context) = postCount(context, 10)
+
+    fun postTwenty(context: Context) = postCount(context, 20)
+
+    fun postCount(context: Context, count: Int) {
         ensureChannel(context)
-        post(context, samples)
+        val safeCount = count.coerceIn(1, MAX_SLOTS)
+        post(context, samplesForCount(safeCount))
     }
 
     fun clear(context: Context) {
         val manager = context.getSystemService(NotificationManager::class.java)
-        samples.indices.forEach { manager.cancel(ID_BASE + it) }
+        repeat(MAX_SLOTS) { manager.cancel(ID_BASE + it) }
     }
 
+    private fun samplesForCount(count: Int): List<Sample> =
+        List(count) { index ->
+            val base = samplePool[index % samplePool.size]
+            if (count <= samplePool.size) base else Sample(base.title, "${base.text} (${index + 1})")
+        }
+
     private fun post(context: Context, items: List<Sample>) {
+        clear(context)
         val manager = context.getSystemService(NotificationManager::class.java)
         items.forEachIndexed { index, sample ->
             manager.notify(ID_BASE + index, build(context, sample, ID_BASE + index))

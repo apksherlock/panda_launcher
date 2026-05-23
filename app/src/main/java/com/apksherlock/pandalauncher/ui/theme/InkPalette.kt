@@ -1,42 +1,24 @@
 package com.apksherlock.pandalauncher.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
-/** Vintage LCD / calculator — green-gray body, dark segments (flips when dim). */
 @Immutable
 data class InkPalette(
     val ink: Color,
-    val milk: Color,
+    val canvas: Color,
     val inkGhost: Color,
+    val backplate: Color,
+    val backplatePressed: Color,
+    /** Home ribbon strip — scheme tint, not app tile backplate. */
+    val ribbon: Color,
+    /** Text, icons — from the active color scheme. */
+    val accent: Color,
 ) {
-    val onInk: Color get() = milk
-    val onMilk: Color get() = ink
-    val dateMuted: Color get() = ink.copy(alpha = 0.5f)
-}
+    /** @deprecated Use [accent] — kept for call sites not yet renamed. */
+    val iconTint: Color get() = accent
 
-// Calculator case + LCD window tones
-private val PixelLight = Color(0xFF1A2218)
-private val BodyLight = Color(0xFFD2D6C6)
-private val PixelDark = Color(0xFF9AB092)
-private val BodyDark = Color(0xFF121612)
-
-@Composable
-fun rememberInkPalette(): InkPalette {
-    val dark = isSystemInDarkTheme()
-    return if (dark) {
-        InkPalette(
-            ink = PixelDark,
-            milk = BodyDark,
-            inkGhost = PixelDark.copy(alpha = 0.12f),
-        )
-    } else {
-        InkPalette(
-            ink = PixelLight,
-            milk = BodyLight,
-            inkGhost = PixelLight.copy(alpha = 0.12f),
-        )
-    }
+    val onInk: Color get() = canvas
+    val onCanvas: Color get() = accent
+    val dateMuted: Color get() = accent.copy(alpha = 0.55f)
 }

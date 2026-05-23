@@ -1,13 +1,11 @@
 package com.apksherlock.pandalauncher.debug
 
 import android.Manifest
-import android.app.WallpaperManager
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -20,11 +18,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -33,11 +33,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.apksherlock.pandalauncher.MainActivity
 import com.apksherlock.pandalauncher.R
+import com.apksherlock.pandalauncher.data.NotificationRepository
+import com.apksherlock.pandalauncher.data.FavoriteAppStore
+import com.apksherlock.pandalauncher.data.HomeScreenAppStore
+import com.apksherlock.pandalauncher.data.LauncherProfileStore
 import com.apksherlock.pandalauncher.ui.components.InkText
 import com.apksherlock.pandalauncher.ui.theme.InkTheme
 import com.apksherlock.pandalauncher.ui.theme.InkThemeAccessor
+import com.apksherlock.pandalauncher.ui.theme.InkClickMetrics
 import com.apksherlock.pandalauncher.ui.theme.inkClickable
-import com.apksherlock.pandalauncher.wallpaper.InkGbCarWallpaperService
+import kotlinx.coroutines.launch
 
 class DebugMenuActivity : ComponentActivity() {
 
@@ -57,6 +62,11 @@ class DebugMenuActivity : ComponentActivity() {
 @Composable
 private fun DebugMenuScreen() {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val favoriteStore = remember(context) { FavoriteAppStore(context) }
+    val homeScreenStore = remember(context) { HomeScreenAppStore(context) }
+    val profileStore = remember(context) { LauncherProfileStore(context) }
+    val notificationRepository = remember(context) { NotificationRepository(context) }
     val palette = InkThemeAccessor.palette
     val text = InkThemeAccessor.text
     val scroll = rememberScrollState()
@@ -67,7 +77,7 @@ private fun DebugMenuScreen() {
         if (granted) DebugNotificationSender.postThree(context)
     }
 
-    fun withNotificationPermission(post: () -> Unit) {
+    fun withPostPermission(post: () -> Unit) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             post()
             return
@@ -81,7 +91,7 @@ private fun DebugMenuScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(palette.milk)
+            .background(palette.canvas)
             .statusBarsPadding()
             .verticalScroll(scroll)
             .padding(24.dp),
@@ -93,30 +103,30 @@ private fun DebugMenuScreen() {
         )
 
         InkText(
-            text = stringResource(R.string.debug_section_wallpaper),
-            style = text.dateCaps,
-            modifier = Modifier.padding(top = 8.dp),
-        )
-        DebugButton(stringResource(R.string.debug_set_wallpaper)) {
-            openInkGbCarWallpaperPicker(context)
-        }
-
-        InkText(
             text = stringResource(R.string.debug_section_notifications),
             style = text.dateCaps,
             modifier = Modifier.padding(top = 8.dp),
         )
         InkText(
-            text = stringResource(R.string.debug_permission_needed),
+            text = stringResource(R.string.debug_notifications_hint),
             style = text.notificationEmpty,
         )
-        DebugButton(stringResource(R.string.debug_post_three)) {
-            withNotificationPermission { DebugNotificationSender.postThree(context) }
+        DebugButton(stringResource(R.string.debug_open_notification_access)) {
+            notificationRepository.openNotificationAccessSettings()
         }
         DebugButton(stringResource(R.string.debug_post_one)) {
-            withNotificationPermission { DebugNotificationSender.postOne(context) }
+            withPostPermission { DebugNotificationSender.postOne(context) }
         }
-        DebugButton(stringResource(R.string.debug_clear)) {
+        DebugButton(stringResource(R.string.debug_post_three)) {
+            withPostPermission { DebugNotificationSender.postThree(context) }
+        }
+        DebugButton(stringResource(R.string.debug_post_ten)) {
+            withPostPermission { DebugNotificationSender.postTen(context) }
+        }
+        DebugButton(stringResource(R.string.debug_post_twenty)) {
+            withPostPermission { DebugNotificationSender.postTwenty(context) }
+        }
+        DebugButton(stringResource(R.string.debug_clear_notifications)) {
             DebugNotificationSender.clear(context)
         }
 
@@ -132,15 +142,14 @@ private fun DebugMenuScreen() {
                 },
             )
         }
+        DebugButton(stringResource(R.string.debug_clear_launcher_prefs)) {
+            scope.launch {
+                favoriteStore.clearFavorite()
+                profileStore.clearDisplayName()
+                homeScreenStore.clearSlots()
+            }
+        }
     }
-}
-
-private fun openInkGbCarWallpaperPicker(context: Context) {
-    val component = ComponentName(context, InkGbCarWallpaperService::class.java)
-    val intent = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER).apply {
-        putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, component)
-    }
-    context.startActivity(intent)
 }
 
 @Composable
@@ -152,7 +161,7 @@ private fun DebugButton(label: String, onClick: () -> Unit) {
         style = text.appLabel,
         modifier = Modifier
             .fillMaxWidth()
-            .inkClickable(onClick = onClick)
+            .inkClickable(onClick = onClick, contentPadding = InkClickMetrics.settingsRow)
             .background(palette.inkGhost)
             .padding(horizontal = 16.dp, vertical = 14.dp),
     )

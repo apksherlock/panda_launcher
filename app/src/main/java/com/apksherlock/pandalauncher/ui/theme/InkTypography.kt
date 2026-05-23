@@ -16,15 +16,13 @@ fun inkFontFamilies(): InkFonts {
     val playfairBold = FontFamily(Font(R.font.playfair_display_bold, weight = FontWeight.Bold))
     val script = FontFamily(Font(R.font.dancing_script_regular, weight = FontWeight.Normal))
     val mono = FontFamily.Monospace
-    val sans = FontFamily.SansSerif
-    return InkFonts(playfairItalic, playfairBold, script, sans, mono)
+    return InkFonts(playfairItalic, playfairBold, script, mono)
 }
 
 data class InkFonts(
     val playfairItalic: FontFamily,
     val playfairBold: FontFamily,
     val script: FontFamily,
-    val sans: FontFamily,
     val mono: FontFamily,
 )
 
@@ -32,37 +30,37 @@ data class InkFonts(
 fun inkTextStyles(fonts: InkFonts, palette: InkPalette): InkTextStyles = InkTextStyles(
     greeting = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 17.sp,
+        fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
-        color = palette.ink,
+        color = palette.accent,
         letterSpacing = 0.5.sp,
     ),
     username = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 17.sp,
+        fontSize = 20.sp,
         fontWeight = FontWeight.Normal,
-        color = palette.ink,
+        color = palette.accent,
         letterSpacing = 0.5.sp,
     ),
     dateCaps = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 10.sp,
+        fontSize = 12.sp,
         fontWeight = FontWeight.Medium,
         color = palette.dateMuted,
         letterSpacing = 1.2.sp,
     ),
     weather = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 9.sp,
+        fontSize = 11.sp,
         fontWeight = FontWeight.Normal,
-        color = palette.ink,
-        lineHeight = 12.sp,
+        color = palette.accent,
+        lineHeight = 14.sp,
     ),
     battery = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 9.sp,
+        fontSize = 11.sp,
         fontWeight = FontWeight.Medium,
-        color = palette.ink,
+        color = palette.accent,
         letterSpacing = 0.8.sp,
     ),
     clockPill = TextStyle(
@@ -80,37 +78,58 @@ fun inkTextStyles(fonts: InkFonts, palette: InkPalette): InkTextStyles = InkText
     ),
     appLabel = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 14.sp,
+        fontSize = 16.sp,
         fontWeight = FontWeight.Normal,
-        color = palette.ink,
+        color = palette.accent,
     ),
     notificationTitle = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 13.sp,
+        fontSize = 15.sp,
         fontWeight = FontWeight.Medium,
-        color = palette.ink,
+        color = palette.accent,
         letterSpacing = 0.3.sp,
     ),
     notificationSubtitle = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 10.sp,
+        fontSize = 12.sp,
         fontWeight = FontWeight.Normal,
         color = palette.dateMuted,
         letterSpacing = 0.2.sp,
-        lineHeight = 13.sp,
+        lineHeight = 16.sp,
     ),
     notificationEmpty = TextStyle(
         fontFamily = fonts.mono,
-        fontSize = 11.sp,
+        fontSize = 13.sp,
         fontWeight = FontWeight.Normal,
         color = palette.dateMuted,
         letterSpacing = 0.5.sp,
+    ),
+    dialogTitle = TextStyle(
+        fontFamily = fonts.mono,
+        fontSize = 22.sp,
+        fontWeight = FontWeight.Bold,
+        color = palette.accent,
+        letterSpacing = 0.5.sp,
+    ),
+    dialogBody = TextStyle(
+        fontFamily = fonts.mono,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+        color = palette.dateMuted,
+        letterSpacing = 0.3.sp,
+        lineHeight = 20.sp,
+    ),
+    dialogAction = TextStyle(
+        fontFamily = fonts.mono,
+        fontSize = 17.sp,
+        fontWeight = FontWeight.Medium,
+        color = palette.accent,
     ),
     gridLabel = TextStyle(
         fontFamily = fonts.mono,
         fontSize = 10.sp,
         fontWeight = FontWeight.Normal,
-        color = palette.ink,
+        color = palette.accent,
         letterSpacing = 0.2.sp,
         lineHeight = 12.sp,
         textAlign = TextAlign.Center,
@@ -129,5 +148,8 @@ data class InkTextStyles(
     val notificationTitle: TextStyle,
     val notificationSubtitle: TextStyle,
     val notificationEmpty: TextStyle,
+    val dialogTitle: TextStyle,
+    val dialogBody: TextStyle,
+    val dialogAction: TextStyle,
     val gridLabel: TextStyle,
 )

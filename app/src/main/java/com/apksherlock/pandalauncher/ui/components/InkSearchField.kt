@@ -24,14 +24,14 @@ fun InkSearchField(
 
     BasicTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = { raw -> onValueChange(raw.replace("\n", "")) },
         modifier = modifier
             .fillMaxWidth()
             .inkSurface(color = palette.inkGhost, shape = InkShape.corners)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        textStyle = text.appLabel.copy(color = palette.ink),
-        singleLine = true,
-        cursorBrush = SolidColor(palette.ink),
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        textStyle = text.appLabel.copy(color = palette.accent),
+        maxLines = 1,
+        cursorBrush = SolidColor(palette.accent),
         decorationBox = { inner ->
             Box {
                 if (value.isEmpty()) {

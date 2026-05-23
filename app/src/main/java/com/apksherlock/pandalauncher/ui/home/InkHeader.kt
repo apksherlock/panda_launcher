@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.apksherlock.pandalauncher.R
+import com.apksherlock.pandalauncher.ui.components.InkBlinkingPrompt
 import com.apksherlock.pandalauncher.ui.components.InkText
 import com.apksherlock.pandalauncher.ui.theme.InkThemeAccessor
 
@@ -24,7 +25,11 @@ fun InkHeader(
     val text = InkThemeAccessor.text
     Column(modifier = modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            InkText(text = stringResource(R.string.ink_greeting), style = text.greeting)
+            InkBlinkingPrompt()
+            InkText(
+                text = " ${stringResource(R.string.ink_greeting)}",
+                style = text.greeting,
+            )
             InkText(
                 text = username,
                 style = text.username,

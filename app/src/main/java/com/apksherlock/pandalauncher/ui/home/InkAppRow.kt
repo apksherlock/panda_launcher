@@ -34,7 +34,10 @@ fun InkAppRow(
                 .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            InkAppIcon(drawable = app.icon)
+            InkAppIcon(
+                drawable = app.icon,
+                loadingProgress = app.loadingProgress,
+            )
             Spacer(Modifier.width(12.dp))
             InkText(text = app.label, style = text.appLabel)
         }

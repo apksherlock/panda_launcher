@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DELETE" />
+            <data android:scheme="package" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.UNINSTALL_PACKAGE" />
+            <data android:scheme="package" />
         </intent>
     </queries>
 
@@ -36,6 +46,27 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".favorite.FavoriteActivity"
+            android:exported="false"
+            android:theme="@style/Theme.PandaLauncher" />
+
+        <activity
+            android:name=".pin.PinItemConfirmActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.PandaLauncher.Dialog">
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".notifications.PandaNotificationListenerService"
             android:exported="true"
@@ -50,18 +81,6 @@
                 android:value="1|2|4|8|16" />
         </service>
 
-        <service
-            android:name=".wallpaper.InkGbCarWallpaperService"
-            android:exported="true"
-            android:label="@string/ink_gb_car_wallpaper_label"
-            android:permission="android.permission.BIND_WALLPAPER">
-            <intent-filter>
-                <action android:name="android.service.wallpaper.WallpaperService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.service.wallpaper"
-                android:resource="@xml/ink_gb_car_wallpaper" />
-        </service>
     </application>
 
 </manifest>

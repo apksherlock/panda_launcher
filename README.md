@@ -9,12 +9,12 @@ A minimal Android home launcher with a vintage **LCD / Game Boy calculator** loo
 - **Home screen** — greeting + date, notification summary (top 3), and a compact stack of five random apps
 - **All-apps drawer** — swipe up from home; search, adaptive grid, swipe down or Back to close
 - **Notifications** — optional listener access; tap a row to open the notification
-- **Live wallpaper** — ambient LCD wave band (GLES 2.0), themed to match light/dark ink palette; home UI stays transparent when the wallpaper is active
-- **Debug tools** (debug builds only) — separate launcher entry with test notifications, wallpaper picker shortcut, and open-home action
+- **Wallpaper** — seven static gradient styles (Compose `Brush`) or **none** to show the device wallpaper; **Settings → Wallpaper**
+- **Debug tools** (debug builds only) — separate launcher entry with test notifications and open-home action
 
 ## Design
 
-| Mode | Background (“milk”) | Foreground (“ink”) |
+| Mode | Background (canvas) | Foreground (accent) |
 |------|---------------------|---------------------|
 | Light | `#D2D6C6` | `#1A2218` |
 | Dark | `#121612` | `#9AB092` |
@@ -41,15 +41,9 @@ Open the project in Android Studio and run the **app** configuration.
 2. Press Home — when prompted, choose **Panda Launcher** and **Always**.
 3. Or: **Settings → Apps → Default apps → Home app**.
 
-## Live wallpaper (optional)
+## Wallpaper
 
-The home screen shows the live wallpaper through a transparent window when **Ink wave** is set.
-
-1. Install a **debug** build (or set the wallpaper from system settings).
-2. **Debug:** open **Panda debug** → **Set Ink wave wallpaper** → confirm.
-3. **System:** long-press home → Wallpaper → Live wallpapers → **Ink wave**.
-
-Without the live wallpaper, home falls back to a solid milk / dark background.
+Under **Settings → Wallpaper**, Panda sets a **solid** device wallpaper from your scheme. Toggle **ribbon** for a right-edge strip on the home screen (Compose, not stretched in the bitmap).
 
 ## Notification access
 
@@ -73,8 +67,11 @@ app/src/main/
 │   │   ├── apps/                    # All-apps sheet & grid
 │   │   ├── components/              # InkText, search field, icons
 │   │   └── theme/                   # Palette, typography, shapes
-│   └── wallpaper/                   # GLES live wallpaper + helpers
-├── assets/shaders/                  # GLSL ES 2.0 fragment/vertex shaders
+│   ├── ui/wallpaper/                # InkWallpaperStylePreview
+│   ├── wallpaper/InkSystemWallpaper.kt  # solid canvas bitmap
+│   ├── ui/home/InkHomeRibbon.kt         # optional ribbon overlay
+│   ├── ui/onboarding/               # InkOnboardingFlow (5-step first run)
+│   └── wallpaper/                   # Style IDs + presets
 └── res/
 
 app/src/debug/                       # Debug-only menu activity
@@ -84,7 +81,7 @@ app/src/debug/                       # Debug-only menu activity
 
 - Kotlin, Jetpack Compose (no Material3 UI dependency)
 - Coroutines, Lifecycle, DataStore (preferences ready for future use)
-- OpenGL ES 2.0 `WallpaperService` for the ink wave background
+- Compose `Brush` gradients for home wallpaper; optional transparency for device wallpaper
 
 ## Development notes
 
